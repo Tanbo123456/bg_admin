@@ -5,10 +5,13 @@ import {
     DeploymentUnitOutlined,
     BarsOutlined
 } from '@ant-design/icons';
+import { connect } from "react-redux";
+
 
 import menuList from '../../config/menu-list'
 import logo from '../../assets/images/logo.png'
 import './left-nav.less'
+import { setHeadTitle } from "../../redux/actions";
 
 const { SubMenu } = Menu;
 
@@ -21,30 +24,36 @@ class LeftNav extends Component {
         const pathname = this.props.location.pathname
         // console.log(pathname)
         // 
-        return menuList.reduce((pre, currentItem) => {
-            // 根据登录用户的menu判断currentItem是否渲染到导航栏
-            if (this.hasAuth(currentItem)) {
+        return menuList.reduce((pre, item) => {
+            // 根据登录用户的menu判断item是否渲染到导航栏
+            if (this.hasAuth(item)) {
                 // 映射渲染导航栏
-                if (!currentItem.children) {
+                if (!item.children) {
+                    // 判断当前item是否为选中的item，如果是则设置header组件的的title
+                    if (pathname===item.key||pathname.indexOf(item.key)===0) {
+                        this.props.setHeadTitle(item.title)
+                    }
+
+
                     pre.push(
-                        <Menu.Item key={currentItem.key} icon={<DeploymentUnitOutlined />}>
-                            <Link to={currentItem.key}>
-                                <span>{currentItem.title}</span>
+                        <Menu.Item key={item.key} icon={<DeploymentUnitOutlined />}>
+                            <Link to={item.key} onClick={()=>this.props.setHeadTitle(item.title)}>
+                                <span>{item.title}</span>
                             </Link>
                         </Menu.Item>
                     )
                 } else {
 
                     pre.push(
-                        <SubMenu key={currentItem.key} icon={<BarsOutlined />} title={currentItem.title}>
-                            {this.getMenuNodes(currentItem.children)}
+                        <SubMenu key={item.key} icon={<BarsOutlined />} title={item.title}>
+                            {this.getMenuNodes(item.children)}
                         </SubMenu>
                     )
                     // 指定打开的菜单
-                    const CItem = currentItem.children.find(c => pathname.indexOf(c.key) === 0)
+                    const CItem = item.children.find(c => pathname.indexOf(c.key) === 0)
                     // console.log(CItem)
                     if (CItem) {
-                        this.openKey = currentItem.key
+                        this.openKey = item.key
                         // console.log(this.openKey)
                     }
 
@@ -59,12 +68,13 @@ class LeftNav extends Component {
         // 3. 菜单项的key在登录用户的menus中
         // 4. 如果有子节点，判断其child的key在menus中
         const key = item.key
-        const user = JSON.parse(localStorage.getItem('user'))
+        // console.log(this.props.user)
+        const user = this.props.user
         const menuSet = new Set(user.role.menus||[])
         // 1. 2. 3. 
         if (item.public||user.username==='admin'||menuSet.has(key)) {
             return true
-        } else if (item.children) { 
+        } else if (item.children) {
            return !!item.children.find(child=>menuSet.has(child.key))
         }
         
@@ -101,4 +111,7 @@ class LeftNav extends Component {
     }
 }
 
-export default withRouter(LeftNav)
+export default connect(
+    state=>({user:state.user}),
+    {setHeadTitle}
+)(withRouter(LeftNav)) 

@@ -48,6 +48,7 @@ export default function UpdateCategory(props) {
                 <Form.Item
                     name="categoryName"
                     label="品类名称"
+                    validateTrigger='onBlur'
                     rules={[
                         {
                             required: true,

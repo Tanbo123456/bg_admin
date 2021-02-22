@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import { Button,Modal } from "antd";
 import {withRouter} from 'react-router-dom'
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { connect } from "react-redux";
 
 import "./header.less";
 import {reqWeather} from '../../api/index'
 import getDate from "../../utils/dateUtil"
-import menuList from '../../config/menu-list'
+// import menuList from '../../config/menu-list'
+import {loginOut} from "../../redux/actions";
 
 
 class Header extends Component {
@@ -38,22 +40,22 @@ class Header extends Component {
     }
 
     // 获取子菜单名称
-    getMenuTitle=()=>{
-        const path = this.props.history.location.pathname
-        let title
-        // console.log(path)
-        menuList.forEach(v=>{
-            if (v.key===path) {
-                title = v.title
-            } else if (v.children) {
-                const cItem = v.children.find(item=>path.indexOf(item.key)===0)
-                if (cItem) {
-                    title = cItem.title
-                }
-            } 
-        })
-        return title
-    }
+    // getMenuTitle=()=>{
+    //     const path = this.props.history.location.pathname
+    //     let title
+    //     // console.log(path)
+    //     menuList.forEach(v=>{
+    //         if (v.key===path) {
+    //             title = v.title
+    //         } else if (v.children) {
+    //             const cItem = v.children.find(item=>path.indexOf(item.key)===0)
+    //             if (cItem) {
+    //                 title = cItem.title
+    //             }
+    //         } 
+    //     })
+    //     return title
+    // }
     // 登出
     handleLoginOut=()=>{
         let that = this
@@ -64,8 +66,7 @@ class Header extends Component {
             okText: '确认',
             cancelText: '取消',
             onOk:()=>{
-                localStorage.removeItem('user');
-                that.props.history.replace('/login')
+                that.props.loginOut()
             }
           });
     }
@@ -79,8 +80,8 @@ class Header extends Component {
         clearInterval(this.sysTimer)
     }
     render() {
-        const title = this.getMenuTitle()
-        const username = JSON.parse(localStorage.getItem('user')).username
+        const title = this.props.headTitle
+        const username = this.props.user.username
         return (
             <div className="header-container">
                 <div className="header-up">
@@ -106,4 +107,7 @@ class Header extends Component {
     }
 }
 
-export default withRouter(Header);
+export default connect(
+    state=>({headTitle:state.headTitle,user:state.user}),
+    {loginOut}
+)(withRouter(Header));

@@ -58,6 +58,7 @@ class AddUpdate extends Component {
                         label='用户名称'
                         name='username'
                         initialValue={user.username}
+                        validateTrigger='onBlur'
                         rules={[
                             {
                                 required: true,
@@ -71,6 +72,7 @@ class AddUpdate extends Component {
                         (<Form.Item
                             label='用户密码'
                             name='password'
+                            validateTrigger='onBlur'
                             rules={[
                                 {
                                     required: true,
@@ -86,6 +88,7 @@ class AddUpdate extends Component {
                         label='手机号码'
                         name='phone'
                         initialValue={user.phone}
+                        validateTrigger='onBlur'
                     >
                         <Input placeholder='请输入手机号' />
                     </Form.Item>
@@ -93,6 +96,7 @@ class AddUpdate extends Component {
                         label='邮箱'
                         name='email'
                         initialValue={user.email}
+                        validateTrigger='onBlur'
                         rules={[
                             {
                                 type: 'email'
@@ -105,6 +109,7 @@ class AddUpdate extends Component {
                         label='角色'
                         name='role_id'
                         initialValue={user.role_id}
+                        validateTrigger='onBlur'
                     >
                         <Select >
                             {roles.map(role => {

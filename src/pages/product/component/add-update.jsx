@@ -137,6 +137,7 @@ class AddUpdate extends Component {
                     <Form.Item
                         label="商品名称"
                         name="name"
+                        validateTrigger='onBlur'
                         initialValue={isUpdate?product.name:''}
                         rules={[
                             {
@@ -152,6 +153,7 @@ class AddUpdate extends Component {
                         label="商品描述"
                         name="desc"
                         initialValue={isUpdate?product.desc:''}
+                        validateTrigger='onBlur'
                         rules={[
                             {
                                 required: true,
@@ -164,6 +166,7 @@ class AddUpdate extends Component {
                     <Form.Item
                         label="s商品价格"
                         name="price"
+                        validateTrigger='onBlur'
                         initialValue={isUpdate?product.price:''}
                         rules={[
                             {
@@ -177,6 +180,7 @@ class AddUpdate extends Component {
                     <Form.Item
                         label="商品类别"
                         name="categorys"
+                        validateTrigger='onBlur'
                         initialValue={cateIdArr}
                         rules={[
                             {   

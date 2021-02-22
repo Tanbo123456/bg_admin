@@ -14,6 +14,8 @@ import Bar from "../charts/bar/bar";
 import Line from "../charts/line/line";
 import Pie from "../charts/pie/pie";
 import NotFound from "../not-found/not-found";
+import { connect } from "react-redux";
+
 
 const { Footer, Sider, Content } = Layout;
 
@@ -21,7 +23,10 @@ const { Footer, Sider, Content } = Layout;
 class Admin extends Component {
 
     render() {
-
+        const user = this.props.user
+        if (!user || !user._id) {
+            return <Redirect to="/login" />
+        }
         return (
             <div className='index-page'>
                 <Layout className='layout-wrap'>
@@ -59,4 +64,7 @@ class Admin extends Component {
     }
 }
 
-export default Admin
+export default connect(
+    state=>({user:state.user}),
+    {}
+)(Admin) 

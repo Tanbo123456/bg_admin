@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import { Input, Button, Form, message } from 'antd'
+import { Input, Button, Form } from 'antd'
 import {
     UserOutlined,
     LockOutlined
 } from '@ant-design/icons'
 import { Redirect } from 'react-router-dom'
+import { connect } from "react-redux";
 
 
 
 import './login.less'
 import logo from './images/logo.png'
-
-import { reqLogin } from '../../api/index'
+import { login } from "../../redux/actions";
 
 
 const { Item } = Form
@@ -20,29 +20,19 @@ class Login extends Component {
     formRef = React.createRef();
     onFinish = async (userInfo) => {
         const { username, password } = userInfo
-        const result = await reqLogin(username, password)
-        // console.log('登录成功',result)
-        if (result.status === 0) {
-            message.success("登录成功")
-            localStorage.setItem('user', JSON.stringify(result.data))
-            this.props.history.replace('/admin')
-        } else {
-            message.error(result.msg)
-            // console.log(result)
-            this.formRef.current.resetFields()
-        }
-
+        this.props.login(username, password)
+        this.formRef.current.resetFields()
 
     };
     onFinishFailed = (errorInfo) => {
         console.log(errorInfo);
     };
     render() {
-        const userInfo = JSON.parse(localStorage.getItem('user') || '{}')
+        const userInfo = this.props.user
         
         if (userInfo && userInfo._id) {
-            console.log(userInfo)
-            return <Redirect to="/" />
+            // console.log(userInfo)
+            return <Redirect to="/home" />
         }
         return (
             <div className="login-page">
@@ -64,10 +54,11 @@ class Login extends Component {
                         >
                             <Item
                                 name="username"
+                                validateTrigger='onBlur'
                                 rules={[
                                     { required: true, whitespace: true, message: 'Please input your username!', },
-                                    { min: 4, message: '用户名大于4位', },
-                                    { max: 12, message: '用户名小于12位', },
+                                    { min: 4, message: '用户名小于4位', },
+                                    { max: 12, message: '用户名大于12位', },
                                     { pattern: /^[a-zA-Z0-9_]+$/, message: "用户名需要合法" }
                                 ]}
                             >
@@ -76,13 +67,14 @@ class Login extends Component {
 
                             <Item
                                 name="password"
+                                validateTrigger='onBlur'
                                 rules={[
                                     {
                                         required: true,
                                         message: 'Please input your password!',
                                     },
-                                    { min: 4, message: '用户名大于4位', },
-                                    { max: 12, message: '用户名小于12位', },
+                                    { min: 4, message: '用户名小于4位', },
+                                    { max: 12, message: '用户名大于12位', },
                                     { pattern: /^[a-zA-Z0-9_]+$/, message: "用户名需要合法" }
                                 ]}
                             >
@@ -102,4 +94,7 @@ class Login extends Component {
     }
 }
 
-export default Login;
+export default connect(
+    state=>({user:state.user}),
+    {login}
+)(Login) ;

@@ -35,6 +35,7 @@ function AddCategoryForm(props) {
                 <Form.Item
                     name="parentId"
                     label="分类"
+                    validateTrigger='onBlur'
                     rules={[
                         {
                             required: true,
@@ -52,6 +53,7 @@ function AddCategoryForm(props) {
                 <Form.Item
                     name="categoryName"
                     label="品类名称"
+                    validateTrigger='onBlur'
                     rules={[
                         {
                             required: true,

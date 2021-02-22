@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { Card,Table,Button,message } from "antd";
+import { connect } from "react-redux";
 
 
 import { reqRoleList,reqAddRole,reqUpdateRole } from "../../api/index";
 import AddRole from "./add-role";
 import AuthRole from "./auth-role";
 import getDate from "../../utils/dateUtil";
+import { loginOut } from "../../redux/actions";
 
 class Role extends Component {
 
@@ -64,18 +66,17 @@ class Role extends Component {
         role.menus = this.menu.getCheckedMenus()
         role._id = this.state.role._id
         role.auth_time = Date.now()
-        role.auth_name = JSON.parse(localStorage.getItem('user')).username
+        role.auth_name = this.props.user.username
         const result = await reqUpdateRole(role)
         if (result.status===0) {
             message.success('设置权限成功')
             this.setState({roleList:[...this.state.roleList]})
         }
         // 判断是否操作了用户所属角色的权限
-        const user =JSON.parse(localStorage.getItem('user'))
+        const user =this.props.user
         if (role._id===user.role_id) {
             message.info('自身角色权限被修改，需要重新登录')
-            localStorage.removeItem('user')
-            this.props.history.replace('/login')
+            this.props.loginOut()
         }
     }
 
@@ -123,4 +124,7 @@ class Role extends Component {
     }
 }
 
-export default Role;
+export default connect(
+    state=>({user:state.user}),
+    {loginOut}
+)(Role) ;

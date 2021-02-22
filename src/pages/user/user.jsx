@@ -8,9 +8,9 @@ class User extends Component {
     render() {
         return (
             <Switch>
-                <Route path='/user/home' component={Home}/>
+                <Route path='/user' component={Home}/>
                 <Route path='/user/add-update' component={AddUpdate}/>
-                <Redirect to='/user/home'/>
+                <Redirect to='/user'/>
             </Switch>
         );
     }

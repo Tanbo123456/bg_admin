@@ -35,6 +35,7 @@ function AddRole(props) {
                     name='roleName'
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 12 }}
+                    validateTrigger='onBlur'
                     rules={[
                         {
                             required: true,
